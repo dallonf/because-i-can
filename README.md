@@ -6,7 +6,11 @@ Most scripts are written with Node.js because I gravitate toward JavaScript for 
 
 ## AI and problem solving
 
-* [Lexico Puzzle Solver](lexico-puzzle-solver/) - Calculates the solution to a crazy puzzle in an obscure game.
+* [Lexico Puzzle Solver](lexico-puzzle-solver/) (May 2013) - Calculates the solution to a crazy puzzle in an obscure game.
+
+## Challenges
+
+* [Quine](quine.js) (May 2013) - A basic [Quine](https://en.wikipedia.org/wiki/Quine_(computing)) in JavaScript. Nothing fancy, I just discovered that they existed and wanted to try one.
 
 ## License
 

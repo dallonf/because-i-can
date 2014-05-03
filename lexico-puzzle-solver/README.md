@@ -1,5 +1,4 @@
 # Screen Puzzle Solver
-(May 2013)
 
 So I was playing an interesting game called [Lexico](http://www.bananattack.com/blog/lexico/). It had a particular puzzle where you had to turn screens on and off to do... something (the game's puzzles were intentionally unintelligable), but each screen could only be turned on if the rest of them were in the right configuration. Throughout the course of the game, you had to put these screens in many different configurations, so naturally, I wrote a script to find the solutions.
 
