@@ -9,6 +9,10 @@ Most scripts are written with Node.js because I gravitate toward JavaScript for 
 * [Lexico Puzzle Solver](lexico-puzzle-solver/) (May 2013) - Calculates the solution to a crazy puzzle in an obscure game.
 * [Tic-Tac-Toe](tic-tac-toe/) (May 2013) - Wins Tic-Tac-Toe. Or at least ties. Because it really is *a strange game*.
 
+## Data processing
+
+* [TVTropes Crawler](tvtropes/) (March 2014) - Ranks TV Tropes entries by number of examples.
+
 ## Challenges
 
 * [Quine](quine.js) (May 2013) - A basic [Quine](https://en.wikipedia.org/wiki/Quine_(computing)) in JavaScript. Nothing fancy, I just discovered that they existed and wanted to try one.
