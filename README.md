@@ -8,6 +8,7 @@ Most scripts are written with Node.js because I gravitate toward JavaScript for 
 
 * [Lexico Puzzle Solver](lexico-puzzle-solver/) (May 2013) - Calculates the solution to a crazy puzzle in an obscure game.
 * [Tic-Tac-Toe](tic-tac-toe/) (May 2013) - Wins Tic-Tac-Toe. Or at least ties. Because it really is *a strange game*.
+* [Word Maker](wordmaker/) (March 2012) - Generates random, usually pronounceable gibberish.
 
 ## Data processing
 
