@@ -18,6 +18,10 @@ Most scripts are written with Node.js because I gravitate toward JavaScript for 
 
 * [Quine](quine.js) (May 2013) - A basic [Quine](https://en.wikipedia.org/wiki/Quine_(computing)) in JavaScript. Nothing fancy, I just discovered that they existed and wanted to try one.
 
+## Game mechanic prototypes
+
+* [Brute Force Hacking](brute-force/) (June 2014) A simulated brute force attempt testing just how fun it is to wait for an exponential process.
+
 ## License
 
 Should you want to use any of this code or copy out bits for your own projects, it's all licensed until the [MIT License](http://opensource.org/licenses/MIT), Copyright &copy; 2014 Dallon Feldner, with the exception of all code under the `node_modules` directory, which is all third-party (although most of it is MIT or Apache 2.0).
