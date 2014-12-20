@@ -31,7 +31,7 @@ for (var i = 0; i < 42; i++) {
 
 var nodes = {},
     visited = {},
-    unvisited = [],    
+    unvisited = [],
     xWins = [],
     oWins = [],
     currentNode;
@@ -61,7 +61,7 @@ function getVictory(node) {
 function isVictory(node, player) {
   // TODO: all these alorithms could be a tiny bit faster if they worked from the bottom up
   // and avoided checking the same cells
-  var x, y, consecutive, 
+  var x, y, consecutive,
       checkedPositiveDiagonal = {}, checkedNegativeDiagonal = {},
       cursor;
 
@@ -193,7 +193,7 @@ function discoverNeighbors(node) {
           createNode(neighbor);
         }
 
-        if (nodes[neighbor].parents.indexOf(node) === -1) nodes[neighbor].parents.push(node);  
+        if (nodes[neighbor].parents.indexOf(node) === -1) nodes[neighbor].parents.push(node);
       }
     }
 
@@ -211,7 +211,7 @@ function discoverNeighbors(node) {
 function renderCell(node, index) {
   if (node[index] === "-") {
     if (index <= 7) {
-      return "[" + index + "]";  
+      return "[" + index + "]";
     } else {
       return " - ";
     }
@@ -294,22 +294,24 @@ function startOutcomeAnalysis() {
 }
 
 function startGame() {
+  createNode(START);
   currentNode = START;
   prompt.start();
-  playerTurn();
+  nextTurn();
 }
 
 function playerTurn() {
+
   console.log();
   console.log("X's turn: ");
   renderNode(currentNode);
   console.log("Press the key for the move you would like to make: ");
   prompt.get(['move'], function(err, result) {
     var index = parseInt(result && result.move, 10);
-    var nextNode = currentNode[index].neighborMap[index];
+    var nextNode = nodes[currentNode].neighborMap[index];
     if (nextNode) {
       currentNode = nextNode;
-      
+
       nextTurn();
     } else {
       console.log("Sorry, that's not a valid move");
@@ -332,21 +334,21 @@ function computerTurn() {
   }
 
   var bestMove = _(nodes[currentNode].neighbors).max(function(n) {
-    // Avoid giving the player a chance to win.
-    if (nodes[n].warning) return -1;
-    return (nodes[n].xWins + nodes[n].oWins) > 0 ? nodes[n].oWins / (nodes[n].xWins + nodes[n].oWins) : 0;
+    return Math.random();
   });
   currentNode = bestMove;
-  
+
   nextTurn();
 }
 
 function nextTurn() {
-  
+
+  discoverNeighbors(currentNode);
+
   if (currentNode.indexOf('-') === -1) {
     console.log();
     renderNode(currentNode);
-    console.log("A strange game. It seems the only way to win is not to play.")
+    console.log("It's a tie.")
   } else {
     var victory = getVictory(currentNode);
     if (victory === "X") {
@@ -383,4 +385,6 @@ function nextTurn() {
 //   renderNode(n);
 // });
 // console.log(nodes[testNode]);
-startDiscover();
+// startDiscover();
+
+startGame();
