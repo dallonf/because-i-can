@@ -1,6 +1,11 @@
 var _ = require('underscore'),
     prompt = require ('prompt'),
-    charm = require('charm')();
+    charm = require('charm')(),
+    debug = require('debug');
+
+var debugMCTS = debug('mcts');
+var debugSim = debug('sim');
+var debugVictory = debug('victory');
 
 charm.pipe(process.stdout);
 
@@ -48,8 +53,7 @@ function nextTurn() {
       charm.foreground('cyan');
       console.log("X's turn: ");
       charm.foreground('white');
-      // playerTurn();
-      computerTurn();
+      playerTurn();
     } else if (currentNode[0] === "O") {
       console.log();
       charm.foreground('red');
@@ -125,7 +129,7 @@ function chooseComputerMove(state) {
     think(rootNode);
   };
   return _.max(rootNode.children, function(c) {
-    // console.log(c.state, c.totalValue, c.nVisits);
+    debugMCTS("%s", c.state + " " + c.totalValue + " " + c.nVisits);
     return c.totalValue;
   }).state;
 }
@@ -197,6 +201,7 @@ function calculateSimulatedVictor(state) {
   var currentState = state;
   while (isBlank(getVictory(currentState)) && !isTie(currentState)) {
     currentState = chooseRandomMove(currentState, { victoryOnly: true });
+    // Enable this to test simulations
     // console.log();
     // renderNode(currentState);
   }
@@ -382,20 +387,3 @@ function takeMove(node, slot) {
 }
 
 startGame();
-
-// var questionableNode = "O----O------X----XXX----OOX--O-OXOXXXOXXOOO";
-// renderNode(questionableNode);
-// var solution = chooseComputerMove(questionableNode);
-// console.log();
-// console.log("Computer's solution: ");
-// renderNode(solution);
-
-// var questionableNode = "X----O------X----XXX--O-OOX--O-OXOXXXOXXOOO";
-// renderNode(questionableNode);
-
-// var victor = calculateSimulatedVictor(questionableNode);
-// console.log("Victor is " + victor);
-
-// var questionableNode = "O--OX-O---XXOXX--XOOOX--XXXOO--OXOOOX-OXXXO";
-// renderNode(questionableNode);
-// console.log("Victor: " + getVictory(questionableNode));
