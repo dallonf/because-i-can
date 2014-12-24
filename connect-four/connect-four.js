@@ -300,7 +300,7 @@ function isVictory(node, player) {
       // Check down and right
       cursor = i;
       do {
-        if ((cursor) % 7 === 0) { // If it's on the edge
+        if ((cursor) % 7 === 0 || cursor > 35) { // If it's on the edge
           break;
         }
         cursor += 8; // 1*7 down, 1 right
@@ -313,7 +313,7 @@ function isVictory(node, player) {
       // Check up and left
       cursor = i;
       do {
-        if ((cursor - 1) % 7 === 0) { // If it's on the edge
+        if ((cursor - 1) % 7 === 0 || cursor <= 7) { // If it's on the edge
           break;
         }
         cursor -= 8; //1*7 up, 1 left
@@ -332,7 +332,7 @@ function isVictory(node, player) {
       // Check up and right
       cursor = i;
       do {
-        if ((cursor) % 7 === 0) { // If it's on the edge
+        if (cursor % 7 === 0 || cursor <= 7) { // If it's on the edge
           break;
         }
         cursor -= 6; // 1*7 up, 1 right
@@ -341,11 +341,11 @@ function isVictory(node, player) {
         } else {
           break;
         }
-      } while (cursor < node.length);
+      } while (cursor > 1);
       // Check down and left
       cursor = i;
       do {
-        if ((cursor - 1) % 7 === 0) { // If it's on the edge
+        if ((cursor - 1) % 7 === 0 || cursor > 35) { // If it's on the edge
           break;
         }
         cursor += 6; // 1*7 down, 1 left
@@ -354,7 +354,7 @@ function isVictory(node, player) {
         } else {
           break;
         }
-      } while (cursor > 1);
+      } while (cursor < node.length);
       if (consecutive >= 4) {
         return true;
       }
@@ -381,7 +381,7 @@ function takeMove(node, slot) {
   }
 }
 
-// startGame();
+startGame();
 
 // var questionableNode = "O----O------X----XXX----OOX--O-OXOXXXOXXOOO";
 // renderNode(questionableNode);
@@ -395,3 +395,7 @@ function takeMove(node, slot) {
 
 // var victor = calculateSimulatedVictor(questionableNode);
 // console.log("Victor is " + victor);
+
+// var questionableNode = "O--OX-O---XXOXX--XOOOX--XXXOO--OXOOOX-OXXXO";
+// renderNode(questionableNode);
+// console.log("Victor: " + getVictory(questionableNode));
