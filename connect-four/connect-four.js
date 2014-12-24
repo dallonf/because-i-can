@@ -165,7 +165,12 @@ function think(mctsNode) {
   var newNode = selectChild(cur);
   visited.push(newNode);
   var simulatedVictor = calculateSimulatedVictor(newNode.state);
-  var value = simulatedVictor === mctsNode.state[0] ? 1 : 0;
+  var value = 0;
+  if (simulatedVictor === mctsNode.state[0]) {
+    value = 1;
+  } else if (simulatedVictor === opposite(mctsNode.state[0])) {
+    value = -1;
+  }
   visited.forEach(function(v) {
     updateStats(v, value);
   });
