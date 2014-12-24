@@ -6,6 +6,7 @@ Most scripts are written with Node.js because I gravitate toward JavaScript for 
 
 ## AI and problem solving
 
+* [Connect Four](connect-four/) (December 2014) - Plays Connect Four. Usually wins.
 * [Lexico Puzzle Solver](lexico-puzzle-solver/) (May 2013) - Calculates the solution to a crazy puzzle in an obscure game.
 * [Tic-Tac-Toe](tic-tac-toe/) (May 2013) - Wins Tic-Tac-Toe. Or at least ties. Because it really is *a strange game*.
 * [Word Maker](wordmaker/) (March 2012) - Generates random, usually pronounceable gibberish.
@@ -24,4 +25,4 @@ Most scripts are written with Node.js because I gravitate toward JavaScript for 
 
 ## License
 
-Should you want to use any of this code or copy out bits for your own projects, it's all licensed until the [MIT License](http://opensource.org/licenses/MIT), Copyright &copy; 2014 Dallon Feldner, with the exception of all code under the `node_modules` directory, which is all third-party (although most of it is MIT or Apache 2.0).
+Should you want to use any of this code or copy out bits for your own projects, it's all licensed under the [MIT License](http://opensource.org/licenses/MIT), Copyright &copy; 2014 Dallon Feldner, with the exception of all code under the `node_modules` directory, which is all third-party (although most of it is MIT or Apache 2.0).
