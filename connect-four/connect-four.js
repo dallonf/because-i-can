@@ -275,6 +275,9 @@ function isVictory(node, player) {
       // Check down and right
       cursor = i;
       do {
+        if ((cursor) % 7 === 0) { // If it's on the edge
+          break;
+        }
         cursor += 8; // 1*7 down, 1 right
         if (node[cursor] === player) {
           consecutive += 1;
@@ -285,6 +288,9 @@ function isVictory(node, player) {
       // Check up and left
       cursor = i;
       do {
+        if ((cursor - 1) % 7 === 0) { // If it's on the edge
+          break;
+        }
         cursor -= 8; //1*7 up, 1 left
         if (node[cursor] === player) {
           consecutive += 1;
@@ -301,23 +307,29 @@ function isVictory(node, player) {
       // Check up and right
       cursor = i;
       do {
+        if ((cursor) % 7 === 0) { // If it's on the edge
+          break;
+        }
         cursor -= 6; // 1*7 up, 1 right
         if (node[cursor] === player) {
           consecutive += 1;
         } else {
           break;
         }
-      } while (cursor > 0);
+      } while (cursor < node.length);
       // Check down and left
       cursor = i;
       do {
+        if ((cursor - 1) % 7 === 0) { // If it's on the edge
+          break;
+        }
         cursor += 6; // 1*7 down, 1 left
         if (node[cursor] === player) {
           consecutive += 1;
         } else {
           break;
         }
-      } while (cursor > 0);
+      } while (cursor > 1);
       if (consecutive >= 4) {
         return true;
       }
