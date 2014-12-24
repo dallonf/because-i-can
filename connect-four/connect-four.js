@@ -139,17 +139,8 @@ function makeMCTSNode(gameState) {
 }
 
 function chooseRandomMove(node, options) {
-  options = options || {};
-  var neighbors = discoverNeighbors(node);
+  var neighbors = discoverNeighbors(node, options);
   var turn = node[0];
-  if (options.goForVictory) {
-    var possibleVictories = neighbors.filter(function(n) {
-      return getVictory(n) === turn;
-    });
-    if (possibleVictories.length) {
-      neighbors = possibleVictories;
-    }
-  }
   var rand = Math.floor(Math.random() * neighbors.length);
   return neighbors[rand];
 }
@@ -168,11 +159,11 @@ function think(mctsNode) {
     visited.push(cur);
   }
   var simulatedVictor = calculateSimulatedVictor(cur.state);
-  var value = 0;
+  var value = 0.5;
   if (simulatedVictor === mctsNode.state[0]) {
     value = 1;
   } else if (simulatedVictor === opposite(mctsNode.state[0])) {
-    value = -1;
+    value = 0;
   }
   visited.forEach(function(v) {
     updateStats(v, value);
@@ -197,7 +188,7 @@ function selectChild(mctsNode) {
 }
 
 function expandNode(mctsNode) {
-  mctsNode.children = discoverNeighbors(mctsNode.state).map(function(n) {
+  mctsNode.children = discoverNeighbors(mctsNode.state, { victoryOnly: true }).map(function(n) {
     return makeMCTSNode(n);
   });
 }
@@ -205,7 +196,9 @@ function expandNode(mctsNode) {
 function calculateSimulatedVictor(state) {
   var currentState = state;
   while (isBlank(getVictory(currentState)) && !isTie(currentState)) {
-    currentState = chooseRandomMove(currentState, { goForVictory: true });
+    currentState = chooseRandomMove(currentState, { victoryOnly: true });
+    // console.log();
+    // renderNode(currentState);
   }
   return getVictory(currentState);
 }
@@ -213,6 +206,31 @@ function calculateSimulatedVictor(state) {
 function updateStats(mctsNode, value) {
   mctsNode.nVisits++;
   mctsNode.totalValue += value;
+}
+
+function discoverNeighbors(node, options) {
+  var options = options || {};
+  if (!isBlank(getVictory(node))) {
+    // The game is over; no further moves are possible
+    return [];
+  }
+
+  var neighbors = [];
+  for (var i = 1; i <= 7; i++) {
+    neighbors.push(takeMove(node, i));
+  }
+  neighbors = neighbors.filter(function(n) { return n; });
+
+  if (options.victoryOnly) {
+    var possibleVictories = neighbors.filter(function(n) {
+      return getVictory(n) === node[0];
+    });
+    if (possibleVictories.length) {
+      neighbors = possibleVictories;
+    }
+  }
+
+  return neighbors;
 }
 
 // Game logic
@@ -363,23 +381,17 @@ function takeMove(node, slot) {
   }
 }
 
-function discoverNeighbors(node) {
-  if (!isBlank(getVictory(node))) {
-    // The game is over; no further moves are possible
-    return [];
-  }
+// startGame();
 
-  var neighbors = [];
-  for (var i = 1; i <= 7; i++) {
-    neighbors.push(takeMove(node, i));
-  }
-  return neighbors.filter(function(n) { return n; });
-}
-
-startGame();
-// var questionableNode = "X----------------X-O----OOXO--XOXXO--XOXXO-";
+// var questionableNode = "O----O------X----XXX----OOX--O-OXOXXXOXXOOO";
 // renderNode(questionableNode);
 // var solution = chooseComputerMove(questionableNode);
 // console.log();
 // console.log("Computer's solution: ");
 // renderNode(solution);
+
+// var questionableNode = "X----O------X----XXX--O-OOX--O-OXOXXXOXXOOO";
+// renderNode(questionableNode);
+
+// var victor = calculateSimulatedVictor(questionableNode);
+// console.log("Victor is " + victor);
