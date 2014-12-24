@@ -105,7 +105,11 @@ function computerTurn() {
 // AI
 
 function chooseComputerMove() {
-  var neighbors = discoverNeighbors(currentNode);
+  return chooseRandomMove(currentNode);
+}
+
+function chooseRandomMove(node) {
+  var neighbors = discoverNeighbors(node);
   var rand = Math.floor(Math.random() * neighbors.length);
   return neighbors[rand];
 }
