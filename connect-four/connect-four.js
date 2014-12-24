@@ -29,7 +29,7 @@ function startGame() {
 }
 
 function nextTurn() {
-  if (currentNode.indexOf('-') === -1) {
+  if (isTie(currentNode)) {
     console.log();
     renderNode(currentNode);
     console.log("It's a tie.")
@@ -103,15 +103,82 @@ function computerTurn() {
 }
 
 // AI
+var EPSILON = 1e-6;
+var ITERATIONS = 1000;
 
 function chooseComputerMove() {
-  return chooseRandomMove(currentNode);
+  // Monte Carlo Tree Search
+  var rootNode = makeMCTSNode(currentNode);
+  for (var i = 0; i < ITERATIONS; i++) {
+    think(rootNode);
+  };
+  return _.max(rootNode.children, function(c) {
+    return c.totalValue;
+  }).state;
+  // return chooseRandomMove(currentNode);
+}
+
+function makeMCTSNode(gameState) {
+  return {
+    state: gameState,
+    nVisits: 0,
+    totalValue: 0
+  };
 }
 
 function chooseRandomMove(node) {
   var neighbors = discoverNeighbors(node);
   var rand = Math.floor(Math.random() * neighbors.length);
   return neighbors[rand];
+}
+
+function think(mctsNode) {
+  var visited = [];
+  var cur = mctsNode;
+  visited.push(cur);
+  while (!isLeaf(cur)) {
+    cur = selectChild(cur);
+    visited.push(cur);
+  }
+  expandNode(cur);
+  var newNode = selectChild(cur);
+  visited.push(newNode);
+  var value = calculateSimulatedVictor(newNode.state) === mctsNode[0] ? 1 : 0;
+  visited.forEach(function(v) {
+    updateStats(v, value);
+  });
+}
+
+function isLeaf(mctsNode) {
+  return !mctsNode.children;
+}
+
+function selectChild(mctsNode) {
+  return _.max(mctsNode.children, function(c) {
+    var exploitation = c.totalValue / (c.nVisits + EPSILON);
+    var exploration = Math.sqrt(Math.log(mctsNode.nVisits + 1) / (c.nVisits + EPSILON));
+    var tieBreaker = Math.random() * EPSILON;
+    return exploitation + exploration + tieBreaker;
+  });
+}
+
+function expandNode(mctsNode) {
+  mctsNode.children = discoverNeighbors(mctsNode.state).map(function(n) {
+    return makeMCTSNode(n);
+  });
+}
+
+function calculateSimulatedVictor(state) {
+  var currentState = state;
+  while (isBlank(getVictory(currentState)) && !isTie(currentState)) {
+    currentState = chooseRandomMove(currentState);
+  }
+  return getVictory(currentState);
+}
+
+function updateStats(mctsNode, value) {
+  mctsNode.nVisits++;
+  mctsNode.totalValue += value;
 }
 
 // Game logic
@@ -124,6 +191,10 @@ function opposite(a) {
 
 function isBlank(a) {
   return a === "-";
+}
+
+function isTie(node) {
+  return node.indexOf('-') === -1;
 }
 
 function getVictory(node) {
