@@ -125,8 +125,18 @@ function makeMCTSNode(gameState) {
   };
 }
 
-function chooseRandomMove(node) {
+function chooseRandomMove(node, options) {
+  options = options || {};
   var neighbors = discoverNeighbors(node);
+  var turn = node[0];
+  if (options.goForVictory) {
+    var possibleVictories = neighbors.filter(function(n) {
+      return getVictory(n) === turn;
+    });
+    if (possibleVictories.length) {
+      neighbors = possibleVictories;
+    }
+  }
   var rand = Math.floor(Math.random() * neighbors.length);
   return neighbors[rand];
 }
@@ -171,7 +181,7 @@ function expandNode(mctsNode) {
 function calculateSimulatedVictor(state) {
   var currentState = state;
   while (isBlank(getVictory(currentState)) && !isTie(currentState)) {
-    currentState = chooseRandomMove(currentState);
+    currentState = chooseRandomMove(currentState, { goForVictory: true });
   }
   return getVictory(currentState);
 }
