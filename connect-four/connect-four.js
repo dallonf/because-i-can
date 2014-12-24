@@ -115,7 +115,6 @@ function chooseComputerMove() {
   return _.max(rootNode.children, function(c) {
     return c.totalValue;
   }).state;
-  // return chooseRandomMove(currentNode);
 }
 
 function makeMCTSNode(gameState) {
@@ -143,7 +142,8 @@ function think(mctsNode) {
   expandNode(cur);
   var newNode = selectChild(cur);
   visited.push(newNode);
-  var value = calculateSimulatedVictor(newNode.state) === mctsNode[0] ? 1 : 0;
+  var simulatedVictor = calculateSimulatedVictor(newNode.state);
+  var value = simulatedVictor === mctsNode.state[0] ? 1 : 0;
   visited.forEach(function(v) {
     updateStats(v, value);
   });
