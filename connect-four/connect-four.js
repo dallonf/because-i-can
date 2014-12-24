@@ -46,7 +46,7 @@ function nextTurn() {
     } else if (currentNode[0] === "X") {
       setTimeout(playerTurn, 1000);
     } else if (currentNode[0] === "O") {
-      setTimeout(computerTurn, 1000);
+      computerTurn();
     }
   }
 }
@@ -55,28 +55,37 @@ function renderNode (node) {
   for (var y = 1; y < node.length; y += 7) {
     var row = " ";
     for (var x = 0; x < 7; x++) {
-      row += renderCell(node, y + x) + " ";
+      renderCell(node, y + x);
+      charm.write(" ");
     }
-    console.log(row);
+    console.log(); // newline
   }
 }
 
 function renderCell(node, index) {
   if (node[index] === "-") {
     if (index <= 7) {
-      return "[" + index + "]";
+      charm.write("[" + index + "]");
     } else {
-      return " - ";
+      charm.write(" - ");
     }
   } else {
-    return " " + node[index] + " ";
+    if (node[index] === 'X') {
+      charm.foreground('cyan');
+    } else if (node[index] === 'O') {
+      charm.foreground('red');
+    }
+    charm.write(" " + node[index] + " ");
+    charm.foreground('white');
   }
 }
 
 function playerTurn() {
 
   console.log();
+  charm.foreground('cyan');
   console.log("X's turn: ");
+  charm.foreground('white');
   renderNode(currentNode);
   console.log("Press the key for the move you would like to make: ");
   prompt.get(['move'], function(err, result) {
@@ -94,8 +103,11 @@ function playerTurn() {
 
 function computerTurn() {
   console.log();
+  charm.foreground('red');
   console.log("O's turn: ");
+  charm.foreground('white');
   renderNode(currentNode);
+  console.log();
 
   currentNode = chooseComputerMove();
 
