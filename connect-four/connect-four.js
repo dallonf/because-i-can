@@ -44,8 +44,17 @@ function nextTurn() {
       renderNode(currentNode);
       console.log("You have been defeated!");
     } else if (currentNode[0] === "X") {
-      playerTurn();
+      console.log();
+      charm.foreground('cyan');
+      console.log("X's turn: ");
+      charm.foreground('white');
+      // playerTurn();
+      computerTurn();
     } else if (currentNode[0] === "O") {
+      console.log();
+      charm.foreground('red');
+      console.log("O's turn: ");
+      charm.foreground('white');
       computerTurn();
     }
   }
@@ -81,10 +90,6 @@ function renderCell(node, index) {
 }
 
 function playerTurn() {
-  console.log();
-  charm.foreground('cyan');
-  console.log("X's turn: ");
-  charm.foreground('white');
   renderNode(currentNode);
   console.log("Press the key for the move you would like to make: ");
   prompt.get(['move'], function(err, result) {
@@ -95,16 +100,12 @@ function playerTurn() {
       nextTurn();
     } else {
       console.log("Sorry, that's not a valid move");
-      setTimeout(playerTurn, 1000);
+      setTimeout(nextTurn, 1000);
     }
   });
 }
 
 function computerTurn() {
-  console.log();
-  charm.foreground('red');
-  console.log("O's turn: ");
-  charm.foreground('white');
   renderNode(currentNode);
   console.log();
 
@@ -124,6 +125,7 @@ function chooseComputerMove(state) {
     think(rootNode);
   };
   return _.max(rootNode.children, function(c) {
+    // console.log(c.state, c.totalValue, c.nVisits);
     return c.totalValue;
   }).state;
 }
@@ -375,7 +377,7 @@ function discoverNeighbors(node) {
 }
 
 startGame();
-// var questionableNode = "O-----------------------XX----XOO---XXXOOO-";
+// var questionableNode = "X----------------X-O----OOXO--XOXXO--XOXXO-";
 // renderNode(questionableNode);
 // var solution = chooseComputerMove(questionableNode);
 // console.log();
