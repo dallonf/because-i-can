@@ -3,7 +3,6 @@ var _ = require('underscore'),
     charm = require('charm')();
 
 charm.pipe(process.stdout);
-// charm.on('^C', process.exit)
 
 // Node key format:
 // 00: turn
@@ -14,33 +13,104 @@ charm.pipe(process.stdout);
 // 29 30 31 32 33 34 35
 // 36 37 38 39 40 41 42
 
-function makeNode(turn, rows) {
-  var node = turn;
-  if (arguments.length !== 7) console.log("Warning! You provided " + (arguments.length-1) + " rows instead of 6.");
-  for (var i = 1; i < arguments.length; i++) {
-    node += arguments[i];
-  }
-  if (node.length !== 43) console.log("Warning! You don't have the right number of columns");
-  return node;
-}
-
 var START = "X"; // X's turn
 for (var i = 0; i < 42; i++) {
   START += "-"; //all spaces blank
 }
 
-var nodes = {},
-    visited = {},
-    unvisited = [],
-    xWins = [],
-    oWins = [],
-    currentNode;
+var currentNode;
 
-function removeFromArray(array, item) {
-  var index = array.indexOf(item);
-  array.splice(index, 1);
-  return array;
+// Interface
+
+function startGame() {
+  currentNode = START;
+  prompt.start();
+  nextTurn();
 }
+
+function nextTurn() {
+  if (currentNode.indexOf('-') === -1) {
+    console.log();
+    renderNode(currentNode);
+    console.log("It's a tie.")
+  } else {
+    var victory = getVictory(currentNode);
+    if (victory === "X") {
+      console.log();
+      renderNode(currentNode);
+      console.log("Congratulations, you defeated the machine!");
+    } else if (victory === "O") {
+      console.log();
+      renderNode(currentNode);
+      console.log("You have been defeated!");
+    } else if (currentNode[0] === "X") {
+      setTimeout(playerTurn, 1000);
+    } else if (currentNode[0] === "O") {
+      setTimeout(computerTurn, 1000);
+    }
+  }
+}
+
+function renderNode (node) {
+  for (var y = 1; y < node.length; y += 7) {
+    var row = " ";
+    for (var x = 0; x < 7; x++) {
+      row += renderCell(node, y + x) + " ";
+    }
+    console.log(row);
+  }
+}
+
+function renderCell(node, index) {
+  if (node[index] === "-") {
+    if (index <= 7) {
+      return "[" + index + "]";
+    } else {
+      return " - ";
+    }
+  } else {
+    return " " + node[index] + " ";
+  }
+}
+
+function playerTurn() {
+
+  console.log();
+  console.log("X's turn: ");
+  renderNode(currentNode);
+  console.log("Press the key for the move you would like to make: ");
+  prompt.get(['move'], function(err, result) {
+    var slot = parseInt(result && result.move, 10);
+    var nextNode = takeMove(currentNode, slot);
+    if (nextNode) {
+      currentNode = nextNode;
+      nextTurn();
+    } else {
+      console.log("Sorry, that's not a valid move");
+      setTimeout(playerTurn, 1000);
+    }
+  });
+}
+
+function computerTurn() {
+  console.log();
+  console.log("O's turn: ");
+  renderNode(currentNode);
+
+  currentNode = chooseComputerMove();
+
+  nextTurn();
+}
+
+// AI
+
+function chooseComputerMove() {
+  var neighbors = discoverNeighbors(currentNode);
+  var rand = Math.floor(Math.random() * neighbors.length);
+  return neighbors[rand];
+}
+
+// Game logic
 
 function opposite(a) {
   if (a === "X") return "O";
@@ -154,237 +224,30 @@ function isVictory(node, player) {
   return false;
 }
 
-function createNode(code) {
-  var node = {
-    code: code,
-    parents: [],
-    neighbors: [],
-    neighborMap: {},
-    distanceFromWin: 10000000
+function takeMove(node, slot) {
+  var grid = node.slice(1);
+  var turn = node[0];
+  var nextTurn = opposite(turn);
+  var i = slot - 1;
+  if (i > 6)  return;
+
+  if (grid[i] === "-") {
+    var slicePoint = i;
+    // Find the lowest available slot
+    while (slicePoint + 7 < 42 && grid[slicePoint + 7] === "-") {
+      slicePoint += 7;
+    }
+    var neighbor = nextTurn + grid.slice(0, slicePoint) + turn + grid.slice(slicePoint + 1);
+    return neighbor;
   }
-  nodes[code] = node;
-  unvisited.push(code);
-  return node;
 }
 
 function discoverNeighbors(node) {
-  // Can't continue to play after winning
-  var victory = getVictory(node);
-  if (isBlank(victory)) {
-
-    var grid = node.slice(1);
-    var turn = node[0];
-    var nextTurn = opposite(turn);
-
-    for (var i = 0; i < 7; i++) {
-      if (grid[i] === "-") {
-
-        var slicePoint = i;
-
-        // Find the lowest available slot
-        while (slicePoint + 7 < 42 && grid[slicePoint + 7] === "-") {
-          slicePoint += 7;
-        }
-
-        var neighbor = nextTurn + grid.slice(0, slicePoint) + turn + grid.slice(slicePoint + 1);
-        nodes[node].neighbors.push(neighbor);
-        nodes[node].neighborMap[i + 1] = neighbor;
-        if (!nodes[neighbor]) {
-          createNode(neighbor);
-        }
-
-        if (nodes[neighbor].parents.indexOf(node) === -1) nodes[neighbor].parents.push(node);
-      }
-    }
-
-  } else if (victory === "X") {
-    xWins.push(node);
-    nodes[node].xWins = 1;
-    nodes[node].distanceFromWin = 1;
-  } else if (victory === "O") {
-    oWins.push(node);
-    nodes[node].oWins = 1;
-    nodes[node].distanceFromWin = 1;
+  var neighbors = [];
+  for (var i = 1; i <= 7; i++) {
+    neighbors.push(takeMove(node, i));
   }
+  return neighbors.filter(function(n) { return n; });
 }
-
-function renderCell(node, index) {
-  if (node[index] === "-") {
-    if (index <= 7) {
-      return "[" + index + "]";
-    } else {
-      return " - ";
-    }
-  } else {
-    return " " + node[index] + " ";
-  }
-}
-
-function renderNode (node) {
-  for (var y = 1; y < node.length; y += 7) {
-    var row = " ";
-    for (var x = 0; x < 7; x++) {
-      row += renderCell(node, y + x) + " ";
-    }
-    console.log(row);
-  }
-}
-
-function discoverStep() {
-  var current = unvisited.shift();
-  if (current) {
-
-    console.log("discovered " + Object.keys(nodes).length + " nodes");
-    renderNode(current);
-    discoverNeighbors(current);
-    setImmediate(discoverStep);
-    charm.up(7);
-  } else {
-    for (var i = 0; i < 7; i++) {
-      console.log();
-    }
-    console.log("Phew!");
-    console.log("Discovered all " + Object.keys(nodes).length + " nodes.");
-    // startOutcomeAnalysis();
-  }
-}
-
-function outcomeAnalysisStep() {
-  unvisited.sort(function(a, b) {
-    return nodes[a].distanceFromWin - nodes[b].distanceFromWin;
-  });
-  var current = unvisited.shift();
-  if (current) {
-    visited[current] = true;
-    if (!nodes[current].xWins) nodes[current].xWins = 0;
-    if (!nodes[current].oWins) nodes[current].oWins = 0;
-    var dist = nodes[current].distanceFromWin + 1;
-
-    var isXVictory = isVictory(current, "X");
-
-    nodes[current].parents.forEach(function(p) {
-
-      if (isXVictory) {
-        // Put a special flag on all the nodes that lead directly to an X victory
-        nodes[p].warning = true;
-      }
-
-      if (nodes[p].distanceFromWin > dist) nodes[p].distanceFromWin = dist;
-      nodes[p].xWins = (nodes[p].xWins || 0) + nodes[current].xWins;
-      nodes[p].oWins = (nodes[p].oWins || 0) + nodes[current].oWins;
-      if (!visited[p] && unvisited.indexOf(p) === -1) unvisited.push(p);
-    });
-    setImmediate(outcomeAnalysisStep);
-  } else {
-    console.log("Finished analysis. Shall we play a game?");
-    startGame();
-  }
-}
-
-function startDiscover() {
-  createNode(START);
-  unvisited.push(START);
-  discoverStep();
-}
-
-
-function startOutcomeAnalysis() {
-  unvisited = xWins.concat(oWins);
-  outcomeAnalysisStep();
-}
-
-function startGame() {
-  createNode(START);
-  currentNode = START;
-  prompt.start();
-  nextTurn();
-}
-
-function playerTurn() {
-
-  console.log();
-  console.log("X's turn: ");
-  renderNode(currentNode);
-  console.log("Press the key for the move you would like to make: ");
-  prompt.get(['move'], function(err, result) {
-    var index = parseInt(result && result.move, 10);
-    var nextNode = nodes[currentNode].neighborMap[index];
-    if (nextNode) {
-      currentNode = nextNode;
-
-      nextTurn();
-    } else {
-      console.log("Sorry, that's not a valid move");
-      setTimeout(playerTurn, 1000);
-    }
-  });
-}
-
-function computerTurn() {
-  console.log();
-  console.log("O's turn: ");
-  renderNode(currentNode);
-
-  if (false) {
-    // Quick little debug view
-    nodes[currentNode].neighbors.forEach(function(n) {
-      var p = (nodes[n].xWins + nodes[n].oWins) > 0 ? nodes[n].oWins / (nodes[n].xWins + nodes[n].oWins) : 0;
-      console.log("Chance of winning for " + n + ": " + p + (nodes[n].warning ? "; WARNING" : ""));
-    });
-  }
-
-  var bestMove = _(nodes[currentNode].neighbors).max(function(n) {
-    return Math.random();
-  });
-  currentNode = bestMove;
-
-  nextTurn();
-}
-
-function nextTurn() {
-
-  discoverNeighbors(currentNode);
-
-  if (currentNode.indexOf('-') === -1) {
-    console.log();
-    renderNode(currentNode);
-    console.log("It's a tie.")
-  } else {
-    var victory = getVictory(currentNode);
-    if (victory === "X") {
-      console.log();
-      renderNode(currentNode);
-      console.log("Congratulations, you defeated the machine!");
-    } else if (victory === "O") {
-      console.log();
-      renderNode(currentNode);
-      console.log("You have been defeated!");
-    } else if (currentNode[0] === "X") {
-      setTimeout(playerTurn, 1000);
-    } else if (currentNode[0] === "O") {
-      setTimeout(computerTurn, 1000);
-    }
-  }
-}
-
-
-// var testNode = makeNode("O",
-//   "-------",
-//   "-------",
-//   "-------",
-//   "-------",
-//   "-------",
-//   "-X--O-X"
-//   );
-// renderNode(testNode);
-// // console.log("victory:", getVictory(testNode));
-// createNode(testNode);
-// discoverNeighbors(testNode);
-// nodes[testNode].neighbors.forEach(function(n) {
-//   console.log();
-//   renderNode(n);
-// });
-// console.log(nodes[testNode]);
-// startDiscover();
 
 startGame();
