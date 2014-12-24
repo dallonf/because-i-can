@@ -1,9 +1,9 @@
 # Tic-Tac-Toe
 (May 2013)
 
-Shortly after building a depth-first search to [solve a puzzle](../lexico-puzzle-solver), I was inspired to build an AI that could actually play and win a game. Of course, Tic-Tac-Toe is the easiest, so I started there. 
+Shortly after building a depth-first search to [solve a puzzle](../lexico-puzzle-solver), I was inspired to build an AI that could actually play and win a game. Of course, Tic-Tac-Toe is the easiest, so I started there.
 
-My primary goal was to make a predictive AI that could consistently win - although Tic-Tac-Toe is usually a very reactive game (most turns, there's only one move you can make that doesn't result in your immediate defeat), it's sometimes possible to "trap" the other player into a situation where they cannot prevent you from winning. 
+My primary goal was to make a predictive AI that could consistently win - although Tic-Tac-Toe is usually a very reactive game (most turns, there's only one move you can make that doesn't result in your immediate defeat), it's sometimes possible to "trap" the other player into a situation where they cannot prevent you from winning.
 
 In practice, it doesn't really find those situations. I'm not convinced that the AI is working optimally or even correctly (some of the stats it reports in debug mode don't look right), but for now, I'm pretty much convinced that it can't work like I hoped it would just due to the nature of the game.
 
@@ -23,8 +23,10 @@ On the AI's turn, it looks at each possible move and chooses the one that has th
 
 ## Connect Four
 
-After learning that Tic-Tac-Toe simply wasn't the best game to test a predictive AI, I tried to port it over to play Connect Four instead: `connect-four.js`.
+After learning that Tic-Tac-Toe simply wasn't the best game to test a predictive AI, I tried to port it over to play Connect Four instead: `connect-four-failed.js`.
 
-Connect Four, as it turns out, is a much more complex game. It is impossible to scan all possible outcomes of the game because there are simply too many. 
+Connect Four, as it turns out, is a much more complex game. It is impossible to scan all possible outcomes of the game because there are simply too many.
 
 I did, however, build a cool-looking visualizer for the scanning process. If you should feel inspired to try running the code, the keyboard shortcut to exit is Ctrl-C.
+
+I later re-attempted Connect Four using a Monte Carlo Tree Search algorithm to [much greater success](../connect-four).
