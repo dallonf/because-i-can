@@ -44,7 +44,7 @@ function nextTurn() {
       renderNode(currentNode);
       console.log("You have been defeated!");
     } else if (currentNode[0] === "X") {
-      setTimeout(playerTurn, 1000);
+      playerTurn();
     } else if (currentNode[0] === "O") {
       computerTurn();
     }
@@ -81,7 +81,6 @@ function renderCell(node, index) {
 }
 
 function playerTurn() {
-
   console.log();
   charm.foreground('cyan');
   console.log("X's turn: ");
@@ -109,18 +108,18 @@ function computerTurn() {
   renderNode(currentNode);
   console.log();
 
-  currentNode = chooseComputerMove();
+  currentNode = chooseComputerMove(currentNode);
 
-  nextTurn();
+  setTimeout(nextTurn, 1000);
 }
 
 // AI
 var EPSILON = 1e-6;
 var ITERATIONS = 1000;
 
-function chooseComputerMove() {
+function chooseComputerMove(state) {
   // Monte Carlo Tree Search
-  var rootNode = makeMCTSNode(currentNode);
+  var rootNode = makeMCTSNode(state);
   for (var i = 0; i < ITERATIONS; i++) {
     think(rootNode);
   };
@@ -161,10 +160,12 @@ function think(mctsNode) {
     cur = selectChild(cur);
     visited.push(cur);
   }
-  expandNode(cur);
-  var newNode = selectChild(cur);
-  visited.push(newNode);
-  var simulatedVictor = calculateSimulatedVictor(newNode.state);
+  if (!isTerminal(cur)) {
+    expandNode(cur);
+    var cur = selectChild(cur);
+    visited.push(cur);
+  }
+  var simulatedVictor = calculateSimulatedVictor(cur.state);
   var value = 0;
   if (simulatedVictor === mctsNode.state[0]) {
     value = 1;
@@ -178,6 +179,10 @@ function think(mctsNode) {
 
 function isLeaf(mctsNode) {
   return !mctsNode.children;
+}
+
+function isTerminal(mctsNode) {
+  return isTie(mctsNode.state) || !isBlank(getVictory(mctsNode.state));
 }
 
 function selectChild(mctsNode) {
@@ -357,6 +362,11 @@ function takeMove(node, slot) {
 }
 
 function discoverNeighbors(node) {
+  if (!isBlank(getVictory(node))) {
+    // The game is over; no further moves are possible
+    return [];
+  }
+
   var neighbors = [];
   for (var i = 1; i <= 7; i++) {
     neighbors.push(takeMove(node, i));
@@ -365,3 +375,9 @@ function discoverNeighbors(node) {
 }
 
 startGame();
+// var questionableNode = "O-----------------------XX----XOO---XXXOOO-";
+// renderNode(questionableNode);
+// var solution = chooseComputerMove(questionableNode);
+// console.log();
+// console.log("Computer's solution: ");
+// renderNode(solution);
