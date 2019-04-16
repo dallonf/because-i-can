@@ -111,11 +111,17 @@ dealer = players[0]
 player_after_dealer = players[1]
 rounds = 0
 turns = 0
+reshuffles = 0
 winner = None
 discard: List[Card] = []
-while len(deck):
-    rounds += 1
+while True:
     # each iteration of this loop is a "round"
+    rounds += 1
+    # make sure the deck has cards left. If not, recycle the discard pile
+    if (not len(deck)):
+        deck, discard = discard, []
+        random.shuffle(deck)
+        reshuffles += 1
     # first, the dealer will draw a card and take their turn
     new_card = deck.pop()
     turns += 1
@@ -147,7 +153,8 @@ while len(deck):
 
 
 print("stats: ", {
+    'reshuffles': reshuffles,
     'rounds': rounds,
     'turns': turns,
-    'winner': winner.number if winner else "N/A"
+    'winner': winner.number
 })
