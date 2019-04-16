@@ -3,8 +3,9 @@ import itertools
 from typing import List, Union, Optional, NamedTuple
 
 # Configuration
-# TODO: what is the maximum number of players before the game breaks down?
-NUM_PLAYERS = 7
+NUM_PLAYERS = 5
+MATCH_SIZE = 4
+MAX_RESHUFFLES = 10
 
 # Data types
 
@@ -30,10 +31,13 @@ class Player:
 
 
 # Constants
-MATCH_SIZE = 4
 SUITS = ('hearts', 'clubs', 'diamonds', 'spades')
 RANKS = list(range(1, 10)) + ['jack', 'queen', 'king', 'ace']
 CARDS = [Card(suit=suit, rank=rank) for suit in SUITS for rank in RANKS]
+
+if ((NUM_PLAYERS * MATCH_SIZE) + NUM_PLAYERS > len(CARDS)):
+    raise Exception(
+        "NUM_PLAYERS is too high; there are not enough cards to deal out starting hands and complete a round")
 
 
 # set up
@@ -118,7 +122,10 @@ while True:
     # each iteration of this loop is a "round"
     rounds += 1
     # make sure the deck has cards left. If not, recycle the discard pile
-    if (not len(deck)):
+    if (len(deck) == 0):
+        if reshuffles > MAX_RESHUFFLES:
+            # don't get caught in an infinite loop
+            break
         deck, discard = discard, []
         random.shuffle(deck)
         reshuffles += 1
@@ -156,5 +163,5 @@ print("stats: ", {
     'reshuffles': reshuffles,
     'rounds': rounds,
     'turns': turns,
-    'winner': winner.number
+    'winner': winner.number if winner else None
 })
