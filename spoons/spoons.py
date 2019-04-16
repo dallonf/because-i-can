@@ -110,6 +110,7 @@ def format_players(players: List[Player]) -> List[str]:
 dealer = players[0]
 player_after_dealer = players[1]
 rounds = 0
+turns = 0
 winner = None
 discard: List[Card] = []
 while len(deck):
@@ -117,6 +118,7 @@ while len(deck):
     # each iteration of this loop is a "round"
     # first, the dealer will draw a card and take their turn
     new_card = deck.pop()
+    turns += 1
     dealer_turn = take_turn(dealer, new_card)
     if dealer_turn.is_winning:
         winner = dealer
@@ -128,6 +130,7 @@ while len(deck):
     players_in_order = [
         player for player in players[::-1] if player.pending_card]
     for player in players_in_order:
+        turns += 1
         turn = take_turn(player, player.pending_card)
         player.pending_card = None
         if turn.is_winning:
@@ -143,5 +146,8 @@ while len(deck):
         break
 
 
-print("rounds before end: ", rounds)
-print("winner ID: ", winner.number if winner else "N/A")
+print("stats: ", {
+    'rounds': rounds,
+    'turns': turns,
+    'winner': winner.number if winner else "N/A"
+})
