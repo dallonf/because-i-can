@@ -1,8 +1,10 @@
 import random
 import itertools
+import csv
 from typing import List, Union, Optional, NamedTuple
 
 # Configuration
+NUM_PLAYERS = 7
 MATCH_SIZE = 4
 MAX_RESHUFFLES = 10
 
@@ -160,8 +162,14 @@ def play_round(num_players: int):
         'reshuffles': reshuffles,
         'rounds': rounds,
         'turns': turns,
-        'winner': winner.number if winner else None
+        'winner': winner.number if winner != None else None
     }
 
 
-print('round 1', play_round(7))
+with open('output.csv', 'w', newline='') as csvfile:
+    writer = csv.writer(csvfile)
+    writer.writerow(["Winner", "Reshuffles", "Rounds", "Turns"])
+    for round_num in range(1000):
+         result = play_round(NUM_PLAYERS)
+         writer.writerow([result['winner'] if result['winner'] != None else "N/A", result['reshuffles'], result['rounds'], result['turns']])
+
