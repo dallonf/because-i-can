@@ -4,6 +4,7 @@ import csv
 from typing import List, Union, Optional, NamedTuple
 
 # Configuration
+SIMULATE_ROUNDS = 1000
 MATCH_SIZE = 4
 MAX_RESHUFFLES = 10
 
@@ -169,7 +170,7 @@ with open('output.csv', 'w', newline='') as csvfile:
     writer = csv.writer(csvfile)
     writer.writerow(["# Players", "Winner", "Reshuffles", "Draws", "Turns"])
     for num_players in range(2, 11):
-        for round_num in range(1000):
+        for round_num in range(SIMULATE_ROUNDS):
             result = play_round(num_players)
             writer.writerow([num_players, result['winner'] if result['winner'] != None else "N/A", result['reshuffles'], result['draws'], result['turns']])
 
