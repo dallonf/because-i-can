@@ -4,7 +4,6 @@ import csv
 from typing import List, Union, Optional, NamedTuple
 
 # Configuration
-NUM_PLAYERS = 7
 MATCH_SIZE = 4
 MAX_RESHUFFLES = 10
 
@@ -113,14 +112,14 @@ def play_round(num_players: int):
 
     dealer = players[0]
     player_after_dealer = players[1]
-    rounds = 0
+    draws = 0
     turns = 0
     reshuffles = 0
     winner = None
     discard: List[Card] = []
     while True:
-        # each iteration of this loop is a "round"
-        rounds += 1
+        # each iteration of this loop is a "draw" (as in the dealer drawing a card)
+        draws += 1
         # make sure the deck has cards left. If not, recycle the discard pile
         if (len(deck) == 0):
             if reshuffles > MAX_RESHUFFLES:
@@ -160,7 +159,7 @@ def play_round(num_players: int):
 
     return {
         'reshuffles': reshuffles,
-        'rounds': rounds,
+        'draws': draws,
         'turns': turns,
         'winner': winner.number if winner != None else None
     }
@@ -168,8 +167,9 @@ def play_round(num_players: int):
 
 with open('output.csv', 'w', newline='') as csvfile:
     writer = csv.writer(csvfile)
-    writer.writerow(["Winner", "Reshuffles", "Rounds", "Turns"])
-    for round_num in range(1000):
-         result = play_round(NUM_PLAYERS)
-         writer.writerow([result['winner'] if result['winner'] != None else "N/A", result['reshuffles'], result['rounds'], result['turns']])
+    writer.writerow(["# Players", "Winner", "Reshuffles", "Draws", "Turns"])
+    for num_players in range(2, 11):
+        for round_num in range(1000):
+            result = play_round(num_players)
+            writer.writerow([num_players, result['winner'] if result['winner'] != None else "N/A", result['reshuffles'], result['draws'], result['turns']])
 
