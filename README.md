@@ -19,6 +19,7 @@ Most scripts are written with Node.js because I gravitate toward JavaScript for 
 ## Challenges and Exercises
 
 * [2022 GMTK Game Jam Prep](gmtkjam-2022-prep/) (July 2022)
+* [Unity Math](unity-math/) (July 2022) - Learning some math stuff. In Unity!
 * [Quine](quine.js) (May 2013) - A basic [Quine](https://en.wikipedia.org/wiki/Quine_(computing)) in JavaScript. Nothing fancy, I just discovered that they existed and wanted to try one.
 
 ## Game mechanic prototypes
