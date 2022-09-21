@@ -1,0 +1,16 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://Math/Lecture1/LookAtTriggerPlayer.gd" type="Script" id=1]
+[ext_resource path="res://Math/Lecture1/LookAtTrigger.gd" type="Script" id=2]
+
+[node name="Node2D" type="Node2D"]
+
+[node name="LookAtTrigger" type="Position2D" parent="."]
+position = Vector2( 472, 235 )
+script = ExtResource( 2 )
+threshold = 0.8
+
+[node name="Player" type="Position2D" parent="LookAtTrigger"]
+position = Vector2( -310, 51.9999 )
+rotation = 1.47111
+script = ExtResource( 1 )

@@ -6,6 +6,7 @@ Most scripts are written with Node.js because I gravitate toward JavaScript for 
 
 ## AI and problem solving
 
+* [Spoons Simulation](spoons/) (April 2019) - Simulates a game of Spoons.
 * [Connect Four](connect-four/) (December 2014) - Plays Connect Four. Usually wins.
 * [Lexico Puzzle Solver](lexico-puzzle-solver/) (May 2013) - Calculates the solution to a crazy puzzle in an obscure game.
 * [Tic-Tac-Toe](tic-tac-toe/) (May 2013) - Wins Tic-Tac-Toe. Or at least ties. Because it really is *a strange game*.
@@ -15,8 +16,9 @@ Most scripts are written with Node.js because I gravitate toward JavaScript for 
 
 * [TVTropes Crawler](tvtropes/) (March 2014) - Ranks TV Tropes entries by number of examples.
 
-## Challenges
+## Challenges and Exercises
 
+* [2022 GMTK Game Jam Prep](gmtkjam-2022-prep/) (July 2022)
 * [Quine](quine.js) (May 2013) - A basic [Quine](https://en.wikipedia.org/wiki/Quine_(computing)) in JavaScript. Nothing fancy, I just discovered that they existed and wanted to try one.
 
 ## Game mechanic prototypes
