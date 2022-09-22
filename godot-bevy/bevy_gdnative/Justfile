@@ -1,0 +1,5 @@
+set shell := ["powershell.exe", "-c"]
+
+build:
+  cargo build
+  cp target\debug\bevy_gdnative.dll ..\GodotBevyHostGame\lib
