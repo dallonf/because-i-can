@@ -1,0 +1,4 @@
+set shell := ["powershell.exe", "-c"]
+
+tic:
+  C:\Apps\tic80.exe --fs . --cmd="load main.lua"

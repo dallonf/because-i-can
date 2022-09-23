@@ -18,6 +18,8 @@ Most scripts are written with Node.js because I gravitate toward JavaScript for 
 
 ## Challenges and Exercises
 
+* [3D Dice in TIC-80](./tic-80-dice) (July 2022) - Making a 3D dice effect in the TIC-80 fantasy console!
+* [3D Dice In p5.js](./processing-dice) (July 2022) - Using p5.js to help with some tricky math for the above.
 * [Bevy in Godot](godot-bevy/) (July 2022)
 * [2022 GMTK Game Jam Prep](gmtkjam-2022-prep/) (July 2022)
 * [Unity Math](unity-math/) (July 2022) - Learning some math stuff. In Unity!
